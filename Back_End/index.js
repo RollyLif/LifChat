@@ -30,21 +30,10 @@ app.post('/user', (req, res, next) =>{
     .catch(error => res.status(400).json({error}))
 })
 
-app.use('/', (req, res, next) => {
-    const stuff = [
-      {
-        _id: 'oeihfzeoi',
-        name: 'Rolly Lifungula',
-        Password: 'meconnecter',
-      },
-      {
-        _id: 'oeihfzeomoihi',
-        id_sender: 'oeihfzeoi',
-        id_receiver: 'oeihfzeog',
-        message : 'Mon premier message de chat Lif'
-      },
-    ];
-    res.status(200).json(stuff);
+app.get('/user', (req, res, next) => {
+    User.find()
+    .then(users => res.status(200).json(users))
+    .catch(error => res.status(400).json({error}))
   });
 
 app.listen(PORT, ()=>console.log("http://localhost:"+PORT));
