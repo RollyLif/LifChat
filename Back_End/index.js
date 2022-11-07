@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('./Models/User');
-const user = require('./Models/User');
+const Person = require('./Models/Person');
 const app = express();
 const PORT = 2015;
 
@@ -20,19 +19,22 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+app.use(express.urlencoded({extended:false}));
+
 app.post('/user', (req, res, next) =>{
     delete req.body._id;
-    const user = new User({
-        ...req.body
+    const person = new Person({
+        name : req.body.name,
+        password : req.body.password
     })
-    user.save()
+    person.save()
     .then(()=> res.status(201).json({message :'Objet enregistre'}))
     .catch(error => res.status(400).json({error}))
 })
 
 app.get('/user', (req, res, next) => {
-    User.find()
-    .then(users => res.status(200).json(users))
+    Person.find()
+    .then(persons => res.status(200).json(persons))
     .catch(error => res.status(400).json({error}))
   });
 
