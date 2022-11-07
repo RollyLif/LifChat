@@ -19,7 +19,7 @@ app.use('/', (req, res, next) => {
       {
         _id: 'oeihfzeomoihi',
         id_sender: 'oeihfzeoi',
-        id_receiver: 'oeihfzeoi',
+        id_receiver: 'oeihfzeog',
         message : 'Mon premier message de chat Lif'
       },
     ];
