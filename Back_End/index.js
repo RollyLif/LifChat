@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const User = require('./Models/User');
+const user = require('./Models/User');
 const app = express();
 const PORT = 2015;
 
@@ -17,6 +19,16 @@ app.use((req, res, next) => {
   });
 
 app.use(express.json());
+
+app.post('/user', (req, res, next) =>{
+    delete req.body._id;
+    const user = new User({
+        ...req.body
+    })
+    user.save()
+    .then(()=> res.status(201).json({message :'Objet enregistre'}))
+    .catch(error => res.status(400).json({error}))
+})
 
 app.use('/', (req, res, next) => {
     const stuff = [
