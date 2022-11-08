@@ -3,9 +3,13 @@ const mongoose = require('mongoose');
 const PersonRoute = require('./Routes/PersonRoutes');
 const MessageRoute = require('./Routes/MessageRoutes');
 const app = express();
-const PORT = 2015;
 
-mongoose.connect('mongodb+srv://Rolly:LifeChat@cluster0.5kdlto6.mongodb.net/?retryWrites=true&w=majority',
+require('dotenv').config();
+
+const URL = process.env.URL;
+const PORT = process.env.PORT || 2015;
+
+mongoose.connect(URL,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
