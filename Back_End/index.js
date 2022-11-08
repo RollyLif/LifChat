@@ -25,6 +25,4 @@ app.use(express.urlencoded({extended:false}));
 app.use('/person', PersonRoute);
 app.use('/private', MessageRoute);
 
-
-
 app.listen(PORT, ()=>console.log("http://localhost:"+PORT));
