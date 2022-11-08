@@ -1,5 +1,6 @@
 const Person = require('../Models/Person');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.createPerson = (req, res, next) =>{
     bcrypt.hash(req.body.password, 10)
@@ -30,7 +31,12 @@ exports.PersonLogin = (req, res, next) =>{
                 }else{
                     res.status(200).json({
                         userId : user._id,
-                        token : 'TOKEN'
+                        token : jwt.sign(
+                            {userId : user._id},
+                            'TOKEN_SECRET_KEY',
+                            { expiresIn : '24h'}
+
+                        )
                     });
                 }
              })
