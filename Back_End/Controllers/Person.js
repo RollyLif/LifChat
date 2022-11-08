@@ -1,13 +1,20 @@
 const Person = require('../Models/Person');
+const bcrypt = require('bcrypt');
 
 exports.createPerson = (req, res, next) =>{
-    delete req.body._id;
-    const person = new Person({
-        ...req.body
-    })
-    person.save()
-    .then(()=> res.status(201).json({message :'Objet enregistre'}))
-    .catch(error => res.status(400).json({error}))
+    bcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            delete req.body._id;
+            const person = new Person({
+            name : req.body.name,
+            password : hash,
+            email : req.body.email  
+            });
+            person.save()
+            .then(()=> res.status(201).json({message :'Objet enregistre'}))
+            .catch(error => res.status(400).json({error}))
+        })
+        .catch(error => res.status(500).json({error}));
 };
 
 exports.ReadOnePerson = (req, res, next) =>{
