@@ -1,11 +1,10 @@
 const express = require('express');
-const route = express.Router();
 const CtrlPerson = require("../Controllers/Person");
+const auth = require("../Middleware/auth");
+const route = express.Router();
 
-route.post('/', CtrlPerson.createPerson)
-
-route.get('/:id', CtrlPerson.ReadOnePerson)
-
-route.get('/all', CtrlPerson.ReadAllPerson);
+route.post('/',auth, CtrlPerson.createPerson);
+route.get('/:id',auth,  CtrlPerson.ReadOnePerson);
+route.get('/all',auth, CtrlPerson.ReadAllPerson);
 
 module.exports = route;

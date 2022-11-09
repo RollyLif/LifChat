@@ -30,7 +30,7 @@ exports.PersonLogin = (req, res, next) =>{
                     res.status(401).json({message : 'Paire identifiant/Mot de passe incorrect'})
                 }else{
                     res.status(200).json({
-                        userId : user._id,
+                        personId : user._id,
                         token : jwt.sign(
                             {userId : user._id},
                             'TOKEN_SECRET_KEY',

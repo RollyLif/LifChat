@@ -1,9 +1,10 @@
 const express = require('express');
-const route = express.Router();
 const MessageCtrl = require("../Controllers/Messages");
+const auth = require("../Middleware/auth");
 
-route.post('/message', MessageCtrl.PostMessage);
-  
-  route.get('/messages/:id', MessageCtrl.ReadMessages);
+const route = express.Router();
 
-  module.exports = route;
+route.post('/message', auth, MessageCtrl.PostMessage);  
+route.get('/messages/:id', auth, MessageCtrl.ReadMessages);
+
+module.exports = route;
