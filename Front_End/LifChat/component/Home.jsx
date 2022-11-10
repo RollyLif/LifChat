@@ -1,5 +1,10 @@
+import React from 'react';
+import {useNavigate} from "react-router-dom"
+
 function home() {
 
+  const navigate = useNavigate();
+  
   return (
     <div className="App">
       <div className='row'>
@@ -11,9 +16,9 @@ function home() {
           <div className='card shadow' style={{width:'25rem'}}>
             <input type="text" placeholder="Email ou nom d'utilisateur" className="form-control"/>
             <input type="password" placeholder="Mot de passe" className="form-control mt-2"/>
-            <button className="btn btn-primary mt-3">Se connecter</button>
+            <button className="btn btn-primary mt-3" onClick={()=>navigate("/Chat")}>Se connecter</button>
             <div className='card-footer mt-3' style={{background :'white'}}>
-             <button className="btn btn-info">Créer un nouveau compte</button>
+             <button className="btn btn-info" onClick={()=>navigate("/Register")}>Créer un nouveau compte</button>
             </div>
           </div>
         </div>
