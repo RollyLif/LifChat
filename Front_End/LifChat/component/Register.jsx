@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React,{ useState }  from 'react';
 import {validEmail, validName,validPWD} from '../models/Regex.js'
 
@@ -6,29 +7,36 @@ function Register() {
   const [email, setEmail] = useState('');
   const [mdp, setMdp] = useState('');
   const [pwd, setPwd] = useState('');
+  const [nameErr, setNameErr] = useState(false);
   const [emailErr, setEmailErr] = useState(false);
   const [passwordErr, setPasswordErr] = useState(false);
 
   const validate = () => {
+
     if (validName.test(name)){
-      console.log('nom valid');
+      setNameErr(true);
     }
+
     if (validEmail.test(email)) {
        setEmailErr(true);
-       console.log('email avec succès');
     }
+
     if(validPWD.test(mdp)){
       if(mdp === pwd){
         setPasswordErr(true);
-        console.log('Mot de passe avec succès');
       }
-    }else{
-      console.log('Mot de passe trop court');
     }
     
+    if(nameErr && emailErr && passwordErr){
+      let Person = {
+        name : name,
+        email : email,
+        password : mdp
+      }
 
-    if(emailErr && passwordErr){
-      console.log('avec succès');
+      axios.post('http://localhost:2015/person/',Person)
+      .then(()=>console.log('avec succès'))
+      .catch((error)=>console.log(error))
     }
  };
 
