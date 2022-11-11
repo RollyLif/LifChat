@@ -4,7 +4,7 @@ const auth = require("../Middleware/auth");
 
 const route = express.Router();
 
-route.post('/message', auth, MessageCtrl.PostMessage);  
-route.get('/messages/:id', auth, MessageCtrl.ReadMessages);
+route.post('/message', MessageCtrl.PostMessage);  
+route.get('/messages/:id', MessageCtrl.ReadMessages);
 
 module.exports = route;

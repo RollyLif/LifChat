@@ -19,20 +19,22 @@ exports.createPerson = (req, res, next) =>{
 };
 
 exports.PersonLogin = (req, res, next) =>{
-    Person.findOne({$or: [{'name':req.body.username},{'email':req.body.username}]})
-      .then(user => {
-        if(user === null){
+    Person.findOne({$or: [{'email':req.body.username},{'name':req.body.username}]})
+      .then(person => {
+        if(person === null){
             res.status(401).json({message : 'Paire identifiant/Mot de passe incorrect'})
         } else {
-            bcrypt.compare(req.body.password, user.password)
+            bcrypt.compare(req.body.password, person.password)
              .then(valid => {
                 if(!valid){
                     res.status(401).json({message : 'Paire identifiant/Mot de passe incorrect'})
+                    console.log('pas correct')
                 }else{
+                    
                     res.status(200).json({
-                        personId : user._id,
+                        personId : person._id,
                         token : jwt.sign(
-                            {userId : user._id},
+                            {userId : person._id},
                             'TOKEN_SECRET_KEY',
                             { expiresIn : '24h'}
 
@@ -48,12 +50,12 @@ exports.PersonLogin = (req, res, next) =>{
 
 exports.ReadOnePerson = (req, res, next) =>{
     Person.findOne({_id: req.params.id})
-      .then(thing => res.status(200).json(thing))
+      .then(person => res.status(200).json(person))
       .catch(error => res.status(400).json({error}))
   };
 
 exports.ReadAllPerson = (req, res, next) => {
-    Person.find()
-    .then(persons => res.status(200).json(persons))
+    Person.find({})
+    .then(person => res.status(200).json(person))
     .catch(error => res.status(400).json({error}))
 }

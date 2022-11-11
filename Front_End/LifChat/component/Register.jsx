@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React,{ useState }  from 'react';
+import {useNavigate} from "react-router-dom"
 import {validEmail, validName,validPWD} from '../models/Regex.js'
 
 function Register() {
@@ -11,6 +12,7 @@ function Register() {
   const [emailErr, setEmailErr] = useState(false);
   const [passwordErr, setPasswordErr] = useState(false);
 
+  const navigate = useNavigate();
   const validate = () => {
 
     if (validName.test(name)){
@@ -35,9 +37,16 @@ function Register() {
       }
 
       axios.post('http://localhost:2015/person/',Person)
-      .then(()=>console.log('avec succès'))
+      .then(()=>{
+        setName("");
+        setMdp("");
+        setEmail("");
+        setPwd("");
+        navigate("/");
+      })
       .catch((error)=>console.log(error))
     }
+    
  };
 
 return (
