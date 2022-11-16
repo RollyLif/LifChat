@@ -4,7 +4,6 @@ import App from './App'
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import Register from '../component/Register'
-import Chat from '../component/Chat'
 import Message from '../component/message'
 import {createBrowserRouter,RouterProvider,Route,} from "react-router-dom";
 
@@ -16,10 +15,6 @@ const router = createBrowserRouter([
   {
     path: "/Register",
     element: <Register/>,
-  },
-  {
-    path: "/Chat",
-    element: <Chat/>,
   },
   {
     path: "/Message",
