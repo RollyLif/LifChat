@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.css'
+import 'react-perfect-scrollbar/dist/css/styles.css';
 import Register from '../component/Register'
 import Message from '../component/message'
 import {createBrowserRouter,RouterProvider,Route,} from "react-router-dom";

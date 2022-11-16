@@ -3,6 +3,8 @@ import './message.css';
 import {BsSearch} from 'react-icons/bs';
 import {TbSend} from 'react-icons/tb'
 import Dialogue from './Dialogue'
+import MessageIn from "./MessageIn";
+import MessageOut from "./MessageOut";
 
 const Message = () => {
   return (
@@ -37,10 +39,11 @@ const Message = () => {
                         </div>
 
                         <div
-                          data-mdb-perfect-scrollbar="true"
                           style={{ 'position': 'relative', 'height': '400px' }}
+                          className="overflow-auto"
                         >
                           <ul className="list-unstyled mb-0">
+                            <Dialogue/>
                             <Dialogue/>
                             
                           </ul>
@@ -50,11 +53,11 @@ const Message = () => {
 
                     <div className="col-md-6 col-lg-7 col-xl-8">
                       <div
-                        className="pt-3 pe-3"
-                        data-mdb-perfect-scrollbar="true"
+                        className="pt-3 pe-3 overflow-auto"
                         style={{ 'position': 'relative', 'height': '400px' }}
                       >
-                        
+                        <MessageIn/>
+                        <MessageOut/>
                       </div>
 
                       <div className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
