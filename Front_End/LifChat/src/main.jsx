@@ -5,6 +5,7 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import Register from '../component/Register'
 import Chat from '../component/Chat'
+import Message from '../component/message'
 import {createBrowserRouter,RouterProvider,Route,} from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "/Chat",
     element: <Chat/>,
+  },
+  {
+    path: "/Message",
+    element: <Message/>,
   },
 ]);
 
