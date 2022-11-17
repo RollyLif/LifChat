@@ -1,16 +1,48 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import axios from 'axios';
 import './message.css';
 import {BsSearch} from 'react-icons/bs';
 import {TbSend} from 'react-icons/tb'
 import Dialogue from './Dialogue'
-import MessageIn from "./MessageIn";
-import MessageOut from "./MessageOut";
 
-const Message = () => {
+function Message(){
+
+const [msg, setMsg]= useState([]);
+
+useEffect(() => {
+
+    axios.get('http://localhost:2015/private/messages/636e3fe7d37676a6b0197762')
+    .then(res => {
+        const mess =res.data;
+        setMsg(...msg, ...mess)
+        console.log(mess)})
+    .catch(error => console.log(error));
+
+    return () => {
+    };
+}, []);
+
+const messtext = () => {
+    axios.get('http://localhost:2015/private/messages/636e3fe7d37676a6b0197762')
+    .then(res => console.log(res.data))
+    .catch(error => console.log(error));
+}
+
   return (
     <div>
-      <section style={{ 'backgroundColor': '#CDC4F9' }}>
-        <div className="container py-5">
+      <section className="bg-primary">
+      <div className="text-white d-flex justify-content-between mx-2">
+        <div>
+          <img src='../images/small_logo.png' className="bg-white mt-2" alt="logo" style={{ 'width' : '30px'}} />
+          <span><em><strong>LifChat</strong></em></span>
+        </div>
+        <div>
+          <span className="font-weight-bolder mx-3"><strong>Rolly Lifungula</strong></span>
+          <button type="button" className="btn btn-outline-light my-2">Deconnexion</button>
+        </div>
+      </div>
+      
+        <div className="container py-2">
           <div className="row">
             <div className="col-md-12">
               <div
@@ -56,8 +88,8 @@ const Message = () => {
                         className="pt-3 pe-3 overflow-auto"
                         style={{ 'position': 'relative', 'height': '400px' }}
                       >
-                        <MessageIn/>
-                        <MessageOut/>
+                        {messtext}
+
                       </div>
 
                       <div className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
