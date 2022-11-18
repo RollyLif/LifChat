@@ -7,33 +7,25 @@ import Dialogue from './Dialogue'
 
 function Message(){
 
+const [name, setName] = useState('');
 const [msg, setMsg]= useState([]);
+const id = localStorage.getItem("")
 
 useEffect(() => {
-
-    axios.get('http://localhost:2015/private/messages/636e3fe7d37676a6b0197762')
-    .then(res => {
-        const mess =res.data;
-        setMsg(...msg, ...mess)
-        console.log(mess)})
-    .catch(error => console.log(error));
-
-    return () => {
-    };
+  async function fetchData() {
+    const req = await axios.get('http://localhost:2015/private/messages/636e3fe7d37676a6b0197762');
+    setMsg(req.data)
+  }
+    fetchData()
 }, []);
 
-const messtext = () => {
-    axios.get('http://localhost:2015/private/messages/636e3fe7d37676a6b0197762')
-    .then(res => console.log(res.data))
-    .catch(error => console.log(error));
-}
 
   return (
     <div>
       <section className="bg-primary">
       <div className="text-white d-flex justify-content-between mx-2">
-        <div>
-          <img src='../images/small_logo.png' className="bg-white mt-2" alt="logo" style={{ 'width' : '30px'}} />
+        <div className="d-flex align-items-center">
+          <img src='../images/small_logo.png' className="bg-white mt-2 mx-2" alt="logo" style={{ 'width' : '30px', 'height':'30px'}} />
           <span><em><strong>LifChat</strong></em></span>
         </div>
         <div>
@@ -88,11 +80,11 @@ const messtext = () => {
                         className="pt-3 pe-3 overflow-auto"
                         style={{ 'position': 'relative', 'height': '400px' }}
                       >
-                        {messtext}
+                      {console.log(msg)}
 
                       </div>
 
-                      <div className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2">
+                      <div className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2 input-group-prepend">
                         <img
                           src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
                           alt="avatar 3"
@@ -110,9 +102,9 @@ const messtext = () => {
                         <a className="ms-3 text-muted" href="#!">
                           <i className="fas fa-smile"></i>
                         </a>
-                        <a className="ms-3" href="#!">
+                        <button className="ms-3" href="#!">
                           <TbSend/>
-                        </a>
+                        </button>
                       </div>
                     </div>
                   </div>

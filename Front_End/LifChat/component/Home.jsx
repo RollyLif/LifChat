@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom"
 
 function home() {
 
+  const log = localStorage.getItem('log');
   const navigate = useNavigate();
   const [nom,setNom] = useState('');
   const [motPasse, setMotPasse] = useState('');
@@ -22,11 +23,14 @@ function home() {
       username : nom,
       password : motPasse
     })
-    .then(()=>{
-      navigate("/Chat");
+    .then((reponse)=>{
+      localStorage.setItem('token',reponse.data.token);
+      localStorage.setItem('Id', reponse.data.personId);
+      localStorage.setItem('log', 'true')
+      navigate("/Message");
     })
     .catch((error) =>{
-      messageError
+      console.log(error);
     })
   }
 
