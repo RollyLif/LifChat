@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React,{ useState }  from 'react';
 import {useNavigate} from "react-router-dom"
+import { validName, validPWD } from "../models/Regex.js";
 
 function home() {
 
@@ -8,6 +9,8 @@ function home() {
   const navigate = useNavigate();
   const [nom,setNom] = useState('');
   const [motPasse, setMotPasse] = useState('');
+  const [nameErr, setNameErr] = useState(false);
+  const [passwordErr, setPasswordErr] = useState(false);
   const [message, setMessage]=('');
 
   const newAccount = ()=>{
@@ -19,7 +22,18 @@ function home() {
   }
 
   const connect = () => {
-    axios.post('http://localhost:2015/person/login',{
+
+    if (validName.test(nom)) {
+      setNameErr(true);
+    }
+
+    if (validPWD.test(motPasse)){
+      setPasswordErr(true)
+    }
+
+    if(nameErr && passwordErr){
+
+      axios.post('http://localhost:2015/person/login',{
       username : nom,
       password : motPasse
     })
@@ -32,6 +46,11 @@ function home() {
     .catch((error) =>{
       console.log(error);
     })
+      
+    }else {
+      console.log('Paire Identifiant/Mot de passe incorrect');
+    }
+    
   }
 
   return (
