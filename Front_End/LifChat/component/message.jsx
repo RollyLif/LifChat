@@ -9,11 +9,11 @@ function Message(){
 
 const [name, setName] = useState('');
 const [msg, setMsg]= useState([]);
-const id = localStorage.getItem("")
+const id = localStorage.getItem("Id")
 
 useEffect(() => {
   async function fetchData() {
-    const req = await axios.get('http://localhost:2015/private/messages/636e3fe7d37676a6b0197762');
+    const req = await axios.get('http://localhost:2015/private/messages/'+id);
     setMsg(req.data)
   }
     fetchData()

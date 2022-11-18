@@ -48,7 +48,7 @@ function home() {
     })
       
     }else {
-      console.log('Paire Identifiant/Mot de passe incorrect');
+      console.log("Remplissez l'identifiant et le mot de passe");
     }
     
   }
