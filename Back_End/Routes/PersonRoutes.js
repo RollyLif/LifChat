@@ -6,6 +6,6 @@ const route = express.Router();
 route.post('/', CtrlPerson.createPerson);
 route.post('/login', CtrlPerson.PersonLogin);
 route.get('/:id', CtrlPerson.ReadOnePerson);
-route.get('/all',CtrlPerson.ReadAllPerson);
+route.get('/all/:id',CtrlPerson.ReadAllPerson);
 
 module.exports = route;

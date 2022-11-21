@@ -1,4 +1,5 @@
 const Message = require('../Models/Message');
+let connected =new Array();
 
 exports.PostMessage = (req, res, next)=>{
     delete req.body._id;
@@ -16,3 +17,21 @@ exports.ReadMessages = (req, res, next) => {
     .then(messenger => res.status(200).json(messenger))
     .catch(error => res.status(400).json({error}))
   };
+
+exports.ConnectedUsers = (req, res, next) =>{
+  const id = req.params.id;
+  Message.find({$or: [{'idSender':req.params.id},{'idReceiver':req.params.id}]})
+    .then(messenger => {
+        messenger.map(msg =>{
+          if(msg.idSender == req.params.id){
+            connected.push(msg.idReceiver);            
+          }else{
+            connected.push(msg.idSender);
+          }
+        })
+        let unique =[...new Set(connected)]
+        res.status(200).json(unique);
+      }
+      )
+    .catch(error => res.status(400).json({error}))
+};

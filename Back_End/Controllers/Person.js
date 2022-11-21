@@ -30,7 +30,6 @@ exports.PersonLogin = (req, res, next) =>{
                     res.status(401).json({message : 'Paire identifiant/Mot de passe incorrect'})
                     console.log('pas correct')
                 }else{
-                    
                     res.status(200).json({
                         personId : person._id,
                         token : jwt.sign(
@@ -55,7 +54,9 @@ exports.ReadOnePerson = (req, res, next) =>{
   };
 
 exports.ReadAllPerson = (req, res, next) => {
-    Person.find({})
+    Person.find({_id: {$ne : req.params.id}}).select(
+        "name","email", "_id"
+    )
     .then(person => res.status(200).json(person))
     .catch(error => res.status(400).json({error}))
 }

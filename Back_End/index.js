@@ -29,4 +29,8 @@ app.use(express.urlencoded({extended:false}));
 app.use('/person', PersonRoute);
 app.use('/private', MessageRoute);
 
-app.listen(PORT, ()=>console.log("http://localhost:"+PORT));
+const server=app.listen(PORT, ()=>console.log("http://localhost:"+PORT));
+const io = require("socket.io")(server);
+io.on('connection', socket =>{
+  console.log('socket io')
+})

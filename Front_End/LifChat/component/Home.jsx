@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React,{ useState }  from 'react';
 import {useNavigate} from "react-router-dom"
-import { validName, validPWD } from "../models/Regex.js";
+import {validName,validPWD} from "../models/Regex.js";
 
 function home() {
 

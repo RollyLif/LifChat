@@ -4,11 +4,15 @@ import './message.css';
 import {BsSearch} from 'react-icons/bs';
 import {TbSend} from 'react-icons/tb'
 import Dialogue from './Dialogue'
+import MessageOut from "./MessageOut";
+import MessageIn from "./MessageIn";
 
 function Message(){
 
 const [name, setName] = useState('');
+const [contact, setContact] = useState([]);
 const [msg, setMsg]= useState([]);
+const [temp, setTemp]= useState('');
 const id = localStorage.getItem("Id")
 
 useEffect(() => {
@@ -68,7 +72,6 @@ useEffect(() => {
                         >
                           <ul className="list-unstyled mb-0">
                             <Dialogue/>
-                            <Dialogue/>
                             
                           </ul>
                         </div>
@@ -80,7 +83,16 @@ useEffect(() => {
                         className="pt-3 pe-3 overflow-auto"
                         style={{ 'position': 'relative', 'height': '400px' }}
                       >
-                      {console.log(msg)}
+                      {msg.map((message) => (
+                          message.idSender == id ? (<MessageOut 
+                            text={message.textMessage} 
+                            temps={message.temps.substring(11,16)+" | "+message.temps.substring(0,10)}
+                          />) : (<MessageIn
+                            text={message.textMessage} 
+                            temps={message.temps.substring(11,16)+" | "+message.temps.substring(0,10)}
+                          />)
+                        
+                      ))}
 
                       </div>
 
