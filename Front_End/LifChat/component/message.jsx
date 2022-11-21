@@ -20,7 +20,13 @@ useEffect(() => {
     const req = await axios.get('http://localhost:2015/private/messages/'+id);
     setMsg(req.data)
   }
+
+  async function getConnected(){
+    const req = await axios.get('http://localhost:2015/person/'+id);
+    setName(req.data.name)
+  }
     fetchData()
+    getConnected()
 }, []);
 
 
@@ -33,7 +39,7 @@ useEffect(() => {
           <span><em><strong>LifChat</strong></em></span>
         </div>
         <div>
-          <span className="font-weight-bolder mx-3"><strong>Rolly Lifungula</strong></span>
+          <span className="font-weight-bolder mx-3"><strong>{name}</strong></span>
           <button type="button" className="btn btn-outline-light my-2">Deconnexion</button>
         </div>
       </div>
@@ -49,12 +55,12 @@ useEffect(() => {
                 <div className="card-body">
                   <div className="row">
                     <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
-                      <div className="p-3">
-                        <div className="input-group rounded mb-3">
+                      <div className="p-3 shadow">
+                        <div className="input-group rounded mb-3 bg-info">
                           <input
                             type="text"
                             className="form-control"
-                            placeholder="Search"
+                            placeholder="Recherche"
                             aria-label="Search"
                             aria-describedby="search-addon"
                           />
@@ -104,9 +110,9 @@ useEffect(() => {
                         />
                         <input
                           type="text"
-                          className="form-control form-control-lg"
+                          className="form-control form-control-lg shadow"
                           id="exampleFormControlInput2"
-                          placeholder="Type message"
+                          placeholder="Taper votre message"
                         />
                         <a className="ms-1 text-muted" href="#!">
                           <i className="fas fa-paperclip"></i>

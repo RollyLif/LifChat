@@ -10,7 +10,7 @@ const Dialogue = () => {
               src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
               alt="avatar"
               className="d-flex align-self-center me-3"
-              width="60"
+              width="30"
             />
             <span className="badge bg-success badge-dot"></span>
           </div>
@@ -20,7 +20,7 @@ const Dialogue = () => {
           </div>
         </div>
         <div className="pt-1">
-          <p className="small text-muted mb-1">Yesterday</p>
+          <p className="small text-muted mb-1">00:00</p>
         </div>
       </a>
     </li>
