@@ -1,57 +1,76 @@
-import React, {useState, useEffect} from "react";
-import axios from 'axios';
-import './message.css';
-import {BsSearch} from 'react-icons/bs';
-import {TbSend} from 'react-icons/tb'
-import Dialogue from './Dialogue'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./message.css";
+import { BsSearch } from "react-icons/bs";
+import { TbSend } from "react-icons/tb";
+import Dialogue from "./Dialogue";
 import MessageOut from "./MessageOut";
 import MessageIn from "./MessageIn";
 
-function Message(){
+function Message() {
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState([]);
+  const [person, idPerson] = useState("");
+  const [msg, setMsg] = useState([]);
+  const [temp, setTemp] = useState("");
+  const id = localStorage.getItem("Id");
 
-const [name, setName] = useState('');
-const [contact, setContact] = useState([]);
-const [msg, setMsg]= useState([]);
-const [temp, setTemp]= useState('');
-const id = localStorage.getItem("Id")
+  useEffect(() => {
+    async function getConnected() {
+      const req = await axios.get("http://localhost:2015/person/" + id);
+      setName(req.data.name);
+    }
 
-useEffect(() => {
-  async function fetchData() {
-    const req = await axios.get('http://localhost:2015/private/messages/'+id);
-    setMsg(req.data)
+    async function getFriend() {
+      const req = await axios.get(
+        "http://localhost:2015/private/message/conversation/" + id
+      );
+      setContact(req.data);
+    }
+    getConnected();
+    getFriend();
+  }, []);
+
+  async function fetchData(friend) {
+    const req = await axios.post(
+      "http://localhost:2015/private/messages/" + id,
+      { friend: friend }
+    );
+    console.log(friend);
+    setMsg(req.data);
   }
-
-  async function getConnected(){
-    const req = await axios.get('http://localhost:2015/person/'+id);
-    setName(req.data.name)
-  }
-    fetchData()
-    getConnected()
-}, []);
-
 
   return (
     <div>
       <section className="bg-primary">
-      <div className="text-white d-flex justify-content-between mx-2">
-        <div className="d-flex align-items-center">
-          <img src='../images/small_logo.png' className="bg-white mt-2 mx-2" alt="logo" style={{ 'width' : '30px', 'height':'30px'}} />
-          <span><em><strong>LifChat</strong></em></span>
+        <div className="text-white d-flex justify-content-between mx-2">
+          <div className="d-flex align-items-center">
+            <img
+              src="../images/small_logo.png"
+              className="bg-white mt-2 mx-2"
+              alt="logo"
+              style={{ width: "30px", height: "30px" }}
+            />
+            <span>
+              <em>
+                <strong>LifChat</strong>
+              </em>
+            </span>
+          </div>
+          <div>
+            <span className="font-weight-bolder mx-3">
+              <strong>{name}</strong>
+            </span>
+            <button type="button" className="btn btn-outline-light my-2">
+              Deconnexion
+            </button>
+          </div>
         </div>
-        <div>
-          <span className="font-weight-bolder mx-3"><strong>{name}</strong></span>
-          <button type="button" className="btn btn-outline-light my-2">Deconnexion</button>
-        </div>
-      </div>
-      
+
         <div className="container py-2">
           <div className="row">
             <div className="col-md-12">
-              <div
-                className="card"
-                id="chat3"
-                style={{ 'borderRadius': '15px'}}
-              >
+              <div className="card" id="chat3" style={{ borderRadius: "15px" }}>
                 <div className="card-body">
                   <div className="row">
                     <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
@@ -68,17 +87,38 @@ useEffect(() => {
                             className="input-group-text border-1"
                             id="search-addon"
                           >
-                            <BsSearch/>
+                            <BsSearch />
                           </span>
                         </div>
 
                         <div
-                          style={{ 'position': 'relative', 'height': '400px' }}
+                          style={{ position: "relative", height: "400px" }}
                           className="overflow-auto"
                         >
                           <ul className="list-unstyled mb-0">
-                            <Dialogue/>
-                            
+                            {contact.map((elt) => {
+                              const nom =
+                                elt.idSender._id === id
+                                  ? elt.idReceiver.name
+                                  : elt.idSender.name;
+
+                              const idFriend =
+                                elt.idSender._id === id
+                                  ? elt.idReceiver._id
+                                  : elt.idSender._id;
+
+                              return (
+                                <div
+                                  key={elt._id}
+                                  onClick={() => fetchData(idFriend)}
+                                >
+                                  <Dialogue
+                                    name={nom}
+                                    message={elt.textMessage}
+                                  />
+                                </div>
+                              );
+                            })}
                           </ul>
                         </div>
                       </div>
@@ -87,26 +127,36 @@ useEffect(() => {
                     <div className="col-md-6 col-lg-7 col-xl-8">
                       <div
                         className="pt-3 pe-3 overflow-auto"
-                        style={{ 'position': 'relative', 'height': '400px' }}
+                        style={{ position: "relative", height: "400px" }}
                       >
-                      {msg.map((message) => (
-                          message.idSender == id ? (<MessageOut 
-                            text={message.textMessage} 
-                            temps={message.temps.substring(11,16)+" | "+message.temps.substring(0,10)}
-                          />) : (<MessageIn
-                            text={message.textMessage} 
-                            temps={message.temps.substring(11,16)+" | "+message.temps.substring(0,10)}
-                          />)
-                        
-                      ))}
-
+                        {msg.map((message) =>
+                          message.idSender == id ? (
+                            <MessageOut 
+                              text={message.textMessage}
+                              temps={
+                                message.temps.substring(11, 16) +
+                                " | " +
+                                message.temps.substring(0, 10)
+                              }
+                            />
+                          ) : (
+                            <MessageIn
+                              text={message.textMessage}
+                              temps={
+                                message.temps.substring(11, 16) +
+                                " | " +
+                                message.temps.substring(0, 10)
+                              }
+                            />
+                          )
+                        )}
                       </div>
 
                       <div className="text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2 input-group-prepend">
                         <img
                           src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
                           alt="avatar 3"
-                          style={{ 'width': '40px', 'height': '100%' }}
+                          style={{ width: "40px", height: "100%" }}
                         />
                         <input
                           type="text"
@@ -121,7 +171,7 @@ useEffect(() => {
                           <i className="fas fa-smile"></i>
                         </a>
                         <button className="ms-3" href="#!">
-                          <TbSend/>
+                          <TbSend />
                         </button>
                       </div>
                     </div>
@@ -134,6 +184,6 @@ useEffect(() => {
       </section>
     </div>
   );
-};
+}
 
 export default Message;

@@ -48,7 +48,7 @@ exports.PersonLogin = (req, res, next) =>{
 }
 
 exports.ReadOnePerson = (req, res, next) =>{
-    Person.findOne({_id: req.params.id})
+    Person.findOne({_id: req.params.id}).select(["name", "email"])
       .then(person => res.status(200).json(person))
       .catch(error => res.status(400).json({error}))
   };

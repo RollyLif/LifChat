@@ -1,6 +1,7 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 
-const Dialogue = () => {
+const Dialogue = (props) => {
+
   return (
     <li className="p-2">
       <a href="#!" className="d-flex justify-content-between">
@@ -15,8 +16,8 @@ const Dialogue = () => {
             <span className="badge bg-success badge-dot"></span>
           </div>
           <div className="pt-1">
-            <p className="fw-bold mb-0">Ben Smith</p>
-            <p className="small text-muted">Lorem ipsum dolor sit.</p>
+            <p className="fw-bold mb-0">{props.name}</p>
+            <p className="small text-muted">{props.message}</p>
           </div>
         </div>
         <div className="pt-1">
