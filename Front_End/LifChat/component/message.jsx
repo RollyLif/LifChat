@@ -11,9 +11,10 @@ function Message() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [contact, setContact] = useState([]);
-  const [person, idPerson] = useState("");
+  const [friend, setFriend] = useState("");
   const [msg, setMsg] = useState([]);
   const [temp, setTemp] = useState("");
+  const [text, setText] = useState("");
   const id = localStorage.getItem("Id");
 
   useEffect(() => {
@@ -37,8 +38,21 @@ function Message() {
       "http://localhost:2015/private/messages/" + id,
       { friend: friend }
     );
-    console.log(friend);
+    setFriend(friend);
     setMsg(req.data);
+  }
+
+  const envoie = async function sendMessage(){
+    console.log(id+" "+friend+" "+text);
+    if(text !== ""){
+      
+    const req = await axios.post(
+    "http://localhost:2015/private/message/",
+      { idSender : id,
+        idReceiver : friend,
+        textMessage : text}
+    );
+  }
   }
 
   const deconnexion = () => {
@@ -170,6 +184,7 @@ function Message() {
                           className="form-control form-control-lg shadow"
                           id="exampleFormControlInput2"
                           placeholder="Taper votre message"
+                          onChange={(e) => setText(e.target.value)}
                         />
                         <a className="ms-1 text-muted" href="#!">
                           <i className="fas fa-paperclip"></i>
@@ -177,7 +192,7 @@ function Message() {
                         <a className="ms-3 text-muted" href="#!">
                           <i className="fas fa-smile"></i>
                         </a>
-                        <button className="ms-3" href="#!">
+                        <button className="ms-3" onClick={envoie}>
                           <TbSend />
                         </button>
                       </div>
