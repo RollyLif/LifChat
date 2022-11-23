@@ -2,7 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const PersonRoute = require('./Routes/PersonRoutes');
 const MessageRoute = require('./Routes/MessageRoutes');
+const cors = require('cors');
 const app = express();
+const socket = require('socket.io');
 
 require('dotenv').config();
 
@@ -22,6 +24,10 @@ mongoose.connect(URL,
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+app.use(cors({
+  origin: '*'
+}));
+
 app.use(express.json());
 
 app.use(express.urlencoded({extended:false}));
@@ -30,7 +36,25 @@ app.use('/person', PersonRoute);
 app.use('/private', MessageRoute);
 
 const server=app.listen(PORT, ()=>console.log("http://localhost:"+PORT));
-const io = require("socket.io")(server);
+const io = require(server,{
+  cors:{
+    origin:"*",
+    Credentials : true,
+  },
+});
+
+global.onlineUsers = new Map();
+
 io.on('connection', socket =>{
-  console.log('socket io')
+  global.chatSocket = socket,
+  socket.on("add-user", (userId)=>{
+    onlineUsers.set(userId,socket.id);
+  });
+
+  socket.on("send-msg",(data)=>{
+    const sendUserSocket = onlineUsers.get(data.to);
+    if(sendUserSocket){
+      socket.to(sendUserSocket).emit("msg-receive", data.msg);
+    }
+  })
 })
