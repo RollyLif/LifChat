@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom"
 import axios from "axios";
-import "./message.css";
 import { BsSearch } from "react-icons/bs";
 import { TbSend } from "react-icons/tb";
 import Dialogue from "./Dialogue";
@@ -8,6 +8,7 @@ import MessageOut from "./MessageOut";
 import MessageIn from "./MessageIn";
 
 function Message() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [contact, setContact] = useState([]);
   const [person, idPerson] = useState("");
@@ -40,6 +41,11 @@ function Message() {
     setMsg(req.data);
   }
 
+  const deconnexion = () => {
+    localStorage.removeItem('log');
+    navigate("/")
+  }
+
   return (
     <div>
       <section className="bg-primary">
@@ -61,7 +67,7 @@ function Message() {
             <span className="font-weight-bolder mx-3">
               <strong>{name}</strong>
             </span>
-            <button type="button" className="btn btn-outline-light my-2">
+            <button type="button" className="btn btn-outline-light my-2" onClick={deconnexion}>
               Deconnexion
             </button>
           </div>
@@ -130,8 +136,9 @@ function Message() {
                         style={{ position: "relative", height: "400px" }}
                       >
                         {msg.map((message) =>
+                        
                           message.idSender == id ? (
-                            <MessageOut 
+                            <MessageOut key ={message._id}
                               text={message.textMessage}
                               temps={
                                 message.temps.substring(11, 16) +
@@ -140,7 +147,7 @@ function Message() {
                               }
                             />
                           ) : (
-                            <MessageIn
+                            <MessageIn key ={message._id}
                               text={message.textMessage}
                               temps={
                                 message.temps.substring(11, 16) +

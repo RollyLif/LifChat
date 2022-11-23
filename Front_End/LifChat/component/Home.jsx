@@ -44,7 +44,7 @@ function home() {
       navigate("/Message");
     })
     .catch((error) =>{
-      console.log(error);
+      showToastMessage
     })
       
     }else {

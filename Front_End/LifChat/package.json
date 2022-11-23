@@ -19,6 +19,7 @@
     "react-icons": "^4.6.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router-dom": "^6.4.3",
+    "react-toastify": "^9.1.1",
     "socket.io-client": "^4.5.3",
     "sort-by": "^1.2.0"
   },
