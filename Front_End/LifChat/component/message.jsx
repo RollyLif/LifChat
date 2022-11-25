@@ -1,33 +1,47 @@
-import React, { useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom"
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BsSearch } from "react-icons/bs";
 import { TbSend } from "react-icons/tb";
 import Dialogue from "./Dialogue";
 import MessageOut from "./MessageOut";
 import MessageIn from "./MessageIn";
+import { io } from "socket.io-client";
+import { v4 as uuidv4} from "uuid"
 
 function Message() {
+  const socket = useRef();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [contact, setContact] = useState([]);
   const [friend, setFriend] = useState("");
   const [msg, setMsg] = useState([]);
-  const [temp, setTemp] = useState("");
+  const [arrival, setArrival] = useState(null);
   const [text, setText] = useState("");
-  const id = localStorage.getItem("Id");
+  const [id,setId] = useState(localStorage.getItem("Id"));
+  const scrollRef = useRef();
+
+  useEffect(() => {
+    if (friend) {
+      socket.current = io("ttp://localhost:2015");
+      socket.current.emit("add-user", friend);
+    }
+  }, [friend]);
 
   useEffect(() => {
     async function getConnected() {
+      setId(localStorage.getItem("Id"));
       const req = await axios.get("http://localhost:2015/person/" + id);
       setName(req.data.name);
     }
 
     async function getFriend() {
-      const req = await axios.get(
-        "http://localhost:2015/private/message/conversation/" + id
-      );
-      setContact(req.data);
+      if(id){
+        const req = await axios.get(
+          "http://localhost:2015/private/message/conversation/" + id
+        );
+        setContact(req.data);
+      }
     }
     getConnected();
     getFriend();
@@ -42,23 +56,49 @@ function Message() {
     setMsg(req.data);
   }
 
-  const envoie = async function sendMessage(){
-    console.log(id+" "+friend+" "+text);
-    if(text !== ""){
-      
-    const req = await axios.post(
-    "http://localhost:2015/private/message/",
-      { idSender : id,
-        idReceiver : friend,
-        textMessage : text}
-    );
-  }
-  }
+  const envoie = async function sendMessage() {
+    console.log(id + " " + friend + " " + text);
+    if (text !== "") {
+      const req = await axios.post("http://localhost:2015/private/message/", {
+        idSender: id,
+        idReceiver: friend,
+        textMessage: text,
+      });
+
+      socket.current.emit("send-msg", {
+        idSender: id,
+        idReceiver: friend,
+        textMessage: text,
+        socketID: socket.id,
+      });
+      setText("");
+
+      const msgs = [...msg];
+      msgs.push({ fromSelf: true, message: text });
+      setMsg(msgs);
+    }
+  };
+
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("msg-receive", (msg) => {
+        setArrival({ fromSelf: false, message: msg });
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    arrival && setMsg((prev) => [...prev, arrival]);
+  }, [arrival]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
+  }, [msg]);
 
   const deconnexion = () => {
-    localStorage.removeItem('log');
-    navigate("/")
-  }
+    localStorage.removeItem("log");
+    navigate("/");
+  };
 
   return (
     <div>
@@ -81,7 +121,11 @@ function Message() {
             <span className="font-weight-bolder mx-3">
               <strong>{name}</strong>
             </span>
-            <button type="button" className="btn btn-outline-light my-2" onClick={deconnexion}>
+            <button
+              type="button"
+              className="btn btn-outline-light my-2"
+              onClick={deconnexion}
+            >
               Deconnexion
             </button>
           </div>
@@ -116,29 +160,32 @@ function Message() {
                           className="overflow-auto"
                         >
                           <ul className="list-unstyled mb-0">
-                            {contact.map((elt) => {
-                              const nom =
-                                elt.idSender._id === id
-                                  ? elt.idReceiver.name
-                                  : elt.idSender.name;
+                            {
+                            contact.length > 0
+                              ? contact.map((element) => {
+                                  const nom =
+                                    element.idSender._id === id
+                                      ? element.idReceiver.name
+                                      : element.idSender.name;
 
-                              const idFriend =
-                                elt.idSender._id === id
-                                  ? elt.idReceiver._id
-                                  : elt.idSender._id;
+                                  const idFriend =
+                                    element.idSender._id === id
+                                      ? element.idReceiver._id
+                                      : element.idSender._id;
 
-                              return (
-                                <div
-                                  key={elt._id}
-                                  onClick={() => fetchData(idFriend)}
-                                >
-                                  <Dialogue
-                                    name={nom}
-                                    message={elt.textMessage}
-                                  />
-                                </div>
-                              );
-                            })}
+                                  return (
+                                    <div
+                                      key={element._id}
+                                      onClick={() => fetchData(idFriend)}
+                                    >
+                                      <Dialogue
+                                        name={nom}
+                                        message={element.textMessage}
+                                      />
+                                    </div>
+                                  );
+                                })
+                              : "No data"}
                           </ul>
                         </div>
                       </div>
@@ -150,24 +197,15 @@ function Message() {
                         style={{ position: "relative", height: "400px" }}
                       >
                         {msg.map((message) =>
-                        
                           message.idSender == id ? (
-                            <MessageOut key ={message._id}
+                            <MessageOut
+                              key={uuidv4()}
                               text={message.textMessage}
-                              temps={
-                                message.temps.substring(11, 16) +
-                                " | " +
-                                message.temps.substring(0, 10)
-                              }
                             />
                           ) : (
-                            <MessageIn key ={message._id}
+                            <MessageIn
+                              key={uuidv4()}
                               text={message.textMessage}
-                              temps={
-                                message.temps.substring(11, 16) +
-                                " | " +
-                                message.temps.substring(0, 10)
-                              }
                             />
                           )
                         )}

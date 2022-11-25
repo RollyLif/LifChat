@@ -4,12 +4,13 @@ const PersonRoute = require('./Routes/PersonRoutes');
 const MessageRoute = require('./Routes/MessageRoutes');
 const cors = require('cors');
 const app = express();
+const http = require('http').Server(app);
 const socket = require('socket.io');
 
 require('dotenv').config();
 
 const URL = process.env.URL;
-const PORT = process.env.PORT || 2015;
+const PORT = process.env.PORT || 2020;
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -35,10 +36,10 @@ app.use(express.urlencoded({extended:false}));
 app.use('/person', PersonRoute);
 app.use('/private', MessageRoute);
 
-const server=app.listen(PORT, ()=>console.log("http://localhost:"+PORT));
-const io = require(server,{
+http.listen(PORT, ()=>console.log("http://localhost:"+PORT));
+const io = require('socket.io')(http,{
   cors:{
-    origin:"*",
+    origin:"http://localhost:5173",
     Credentials : true,
   },
 });

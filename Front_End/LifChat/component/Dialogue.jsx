@@ -3,7 +3,7 @@ import React,{useState, useEffect} from "react";
 const Dialogue = (props) => {
 
   return (
-    <li className="p-2">
+    <li className="p-2 shadow">
       <a href="#!" className="d-flex justify-content-between">
         <div className="d-flex flex-row">
           <div>
