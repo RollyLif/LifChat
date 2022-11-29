@@ -5,19 +5,11 @@ const MessageRoute = require('./Routes/MessageRoutes');
 const cors = require('cors');
 const app = express();
 const http = require('http').Server(app);
-const socket = require('socket.io');
 
 require('dotenv').config();
 
 const URL = process.env.URL;
 const PORT = process.env.PORT || 2020;
-
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  next();
-});
 
 mongoose.connect(URL,
   { useNewUrlParser: true,
@@ -25,9 +17,7 @@ mongoose.connect(URL,
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-app.use(cors({
-  origin: '*'
-}));
+app.use(cors());
 
 app.use(express.json());
 
@@ -37,25 +27,29 @@ app.use('/person', PersonRoute);
 app.use('/private', MessageRoute);
 
 http.listen(PORT, ()=>console.log("http://localhost:"+PORT));
+
 const io = require('socket.io')(http,{
   cors:{
-    origin:"http://localhost:5173",
-    Credentials : true,
+    origin:'*',
   },
 });
 
 global.onlineUsers = new Map();
 
-io.on('connection', socket =>{
-  global.chatSocket = socket,
-  socket.on("add-user", (userId)=>{
-    onlineUsers.set(userId,socket.id);
+io.on('connection', (socket) =>{
+  global.chatSocket = socket;
+  socket.on("add-user",(userId)=>{
+    onlineUsers.set(userId, socket.id);
   });
 
-  socket.on("send-msg",(data)=>{
-    const sendUserSocket = onlineUsers.get(data.to);
+  socket.on("send-msg", (data) => {
+    const sendUserSocket = onlineUsers.get(data.idReceiver);
     if(sendUserSocket){
-      socket.to(sendUserSocket).emit("msg-receive", data.msg);
+      socket.to(sendUserSocket).emit("msg-recieve", data)
     }
-  })
-})
+  });
+
+    socket.on('disconnect', () => {
+      console.log('🔥: A user disconnected');
+  });
+});

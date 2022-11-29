@@ -31,10 +31,10 @@ exports.ConnectedUsers = async (req, res, next) => {
   const id = req.params.id;
   try {
     const messenger = await Message.find({
-      $or: [{ idSender: req.params.id }, { idReceiver: req.params.id }],
+      $or: [{ idSender: id }, { idReceiver: id }],
     }).select(["idSender", "idReceiver", "textMessage"]);
     messenger.map((msg) => {
-      if (msg.idSender == req.params.id) {
+      if (msg.idSender === id) {
         return connected.push(msg.idReceiver.toString());
       } else {
         return connected.push(msg.idSender.toString());
@@ -46,7 +46,7 @@ exports.ConnectedUsers = async (req, res, next) => {
         const newMsg = await Message.findOne({
           $and: [
             {
-              $or: [{ idSender: req.params.id }, { idReceiver: req.params.id }],
+              $or: [{ idSender: id }, { idReceiver: id }],
             },
             { $or: [{ idSender: m }, { idReceiver: m }] },
           ],

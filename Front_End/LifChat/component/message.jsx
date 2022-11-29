@@ -6,11 +6,12 @@ import { TbSend } from "react-icons/tb";
 import Dialogue from "./Dialogue";
 import MessageOut from "./MessageOut";
 import MessageIn from "./MessageIn";
-import { io } from "socket.io-client";
 import { v4 as uuidv4} from "uuid"
+import socketIO from 'socket.io-client';
+
 
 function Message() {
-  const socket = useRef();
+  const socket = socketIO.connect('http://localhost:2015');
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [contact, setContact] = useState([]);
@@ -21,12 +22,13 @@ function Message() {
   const [id,setId] = useState(localStorage.getItem("Id"));
   const scrollRef = useRef();
 
-  useEffect(() => {
-    if (friend) {
-      socket.current = io("ttp://localhost:2015");
-      socket.current.emit("add-user", friend);
-    }
-  }, [friend]);
+  /*useEffect(() => {
+    socket.on('messageResponse', (data) => setMsg([...msg,data]));
+  }, [socket, msg]);*/
+
+  useEffect(()=>{
+    socket.emit("add-user", id);
+  },[id])
 
   useEffect(() => {
     async function getConnected() {
@@ -57,43 +59,37 @@ function Message() {
   }
 
   const envoie = async function sendMessage() {
-    console.log(id + " " + friend + " " + text);
     if (text !== "") {
+      let message ={
+        idSender : id,
+        idReceiver : friend,
+        textMessage :text,
+        temps :Date.now()
+      }
       const req = await axios.post("http://localhost:2015/private/message/", {
         idSender: id,
         idReceiver: friend,
         textMessage: text,
       });
 
-      socket.current.emit("send-msg", {
-        idSender: id,
-        idReceiver: friend,
-        textMessage: text,
-        socketID: socket.id,
-      });
+      socket.emit("send-msg",
+            message
+      )
+
       setText("");
 
-      const msgs = [...msg];
-      msgs.push({ fromSelf: true, message: text });
+      const msgs = [...msgs,message];
+      msgs.push(message);
       setMsg(msgs);
     }
   };
 
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msg-receive", (msg) => {
-        setArrival({ fromSelf: false, message: msg });
-      });
+    if(id){
+      socket.on("msg-receive", (data) => setMsg([...msg,data])
+      );
     }
-  }, []);
-
-  useEffect(() => {
-    arrival && setMsg((prev) => [...prev, arrival]);
-  }, [arrival]);
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
-  }, [msg]);
+  });
 
   const deconnexion = () => {
     localStorage.removeItem("log");
@@ -163,15 +159,17 @@ function Message() {
                             {
                             contact.length > 0
                               ? contact.map((element) => {
-                                  const nom =
+                                  const nom = 
                                     element.idSender._id === id
                                       ? element.idReceiver.name
                                       : element.idSender.name;
 
-                                  const idFriend =
+                                  const idFriend = 
                                     element.idSender._id === id
                                       ? element.idReceiver._id
                                       : element.idSender._id;
+
+                                      console.log(nom+" "+idFriend);
 
                                   return (
                                     <div
