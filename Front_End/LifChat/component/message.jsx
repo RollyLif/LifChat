@@ -18,19 +18,10 @@ function Message() {
   const [contact, setContact] = useState([]);
   const [friend, setFriend] = useState("");
   const [msg, setMsg] = useState([]);
-  const [arrival, setArrival] = useState(null);
   const [text, setText] = useState("");
   const [id,setId] = useState(localStorage.getItem("Id"));
-  const scrollRef = useRef();
-
-  /*useEffect(() => {
-    socket.on('messageResponse', (data) => setMsg([...msg,data]));
-  }, [socket, msg]);*/
-
-  useEffect(()=>{
-    socket.emit("add-user", id);
-  },[id])
-
+  
+ 
   useEffect(() => {
     async function getConnected() {
       setId(localStorage.getItem("Id"));

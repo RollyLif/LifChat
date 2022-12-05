@@ -31,16 +31,16 @@ exports.ConnectedUsers = async (req, res, next) => {
   const id = req.params.id;
   try {
     const messenger = await Message.find({
-      $or: [{ idSender: id }, { idReceiver: id }],
+      $or: [{ idSender: req.params.id }, { idReceiver: req.params.id }],
     }).select(["idSender", "idReceiver", "textMessage"]);
     messenger.map((msg) => {
-      if (msg.idSender === id) {
-        return connected.push(msg.idReceiver.toString());
-      } else {
-        return connected.push(msg.idSender.toString());
+      if(msg.idSender == req.params.id){
+        return connected.push(msg.idReceiver.toString())
+      }else{
+        return connected.push(msg.idSender.toString())
       }
     });
-
+      console.log([...new Set(connected)])
     let unique = await Promise.all(
       [...new Set(connected)].map(async (m) => {
         const newMsg = await Message.findOne({
