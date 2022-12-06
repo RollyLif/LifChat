@@ -6,6 +6,7 @@ import { TbSend } from "react-icons/tb";
 import Dialogue from "./Dialogue";
 import MessageOut from "./MessageOut";
 import MessageIn from "./MessageIn";
+import Home from "./Home";
 import { v4 as uuidv4} from "uuid"
 import socketIO from 'socket.io-client';
 
@@ -17,19 +18,10 @@ function Message() {
   const [contact, setContact] = useState([]);
   const [friend, setFriend] = useState("");
   const [msg, setMsg] = useState([]);
-  const [arrival, setArrival] = useState(null);
   const [text, setText] = useState("");
   const [id,setId] = useState(localStorage.getItem("Id"));
-  const scrollRef = useRef();
-
-  /*useEffect(() => {
-    socket.on('messageResponse', (data) => setMsg([...msg,data]));
-  }, [socket, msg]);*/
-
-  useEffect(()=>{
-    socket.emit("add-user", id);
-  },[id])
-
+  
+ 
   useEffect(() => {
     async function getConnected() {
       setId(localStorage.getItem("Id"));
@@ -98,7 +90,8 @@ function Message() {
 
   return (
     <div>
-      <section className="bg-primary">
+      {
+        (localStorage.getItem("log") == "true" ? <section className="bg-primary">
         <div className="text-white d-flex justify-content-between mx-2">
           <div className="d-flex align-items-center">
             <img
@@ -239,7 +232,8 @@ function Message() {
             </div>
           </div>
         </div>
-      </section>
+      </section>:<Home/>)
+      }
     </div>
   );
 }
