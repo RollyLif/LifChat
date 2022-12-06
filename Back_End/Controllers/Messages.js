@@ -1,6 +1,6 @@
 const { populate } = require("../Models/Message");
 const Message = require("../Models/Message");
-let connected = [];
+
 
 exports.PostMessage = (req, res, next) => {
   delete req.body._id;
@@ -28,19 +28,20 @@ exports.ReadMessages = (req, res, next) => {
 };
 
 exports.ConnectedUsers = async (req, res, next) => {
+  let connected = [];
   const id = req.params.id;
   try {
     const messenger = await Message.find({
       $or: [{ idSender: req.params.id }, { idReceiver: req.params.id }],
-    }).select(["idSender", "idReceiver", "textMessage"]);
+    })
+      .select(["idSender", "idReceiver"]);
     messenger.map((msg) => {
-      if(msg.idSender == req.params.id){
-        return connected.push(msg.idReceiver.toString())
-      }else{
-        return connected.push(msg.idSender.toString())
+      if (msg.idSender == req.params.id) {
+        return connected.push(msg.idReceiver.toString());
+      } else {
+        return connected.push(msg.idSender.toString());
       }
     });
-      console.log([...new Set(connected)])
     let unique = await Promise.all(
       [...new Set(connected)].map(async (m) => {
         const newMsg = await Message.findOne({
@@ -50,7 +51,9 @@ exports.ConnectedUsers = async (req, res, next) => {
             },
             { $or: [{ idSender: m }, { idReceiver: m }] },
           ],
-        }).populate(['idSender', 'idReceiver']).sort({ temps: -1 });
+        })
+          .populate(["idSender", "idReceiver"])
+          .sort({ temps: -1 });
         return newMsg;
       })
     );
