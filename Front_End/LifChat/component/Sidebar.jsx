@@ -5,8 +5,8 @@ import Siderbarchat from "./Siderbarchat";
 
 const Sidebar = () => {
   return (
-    <div className="d-flex flex-column" style={{ flex: "0.35" }}>
-      <div className="d-flex justify-content-between p-2 border border-light">
+    <div className="d-flex flex-column bg-primary" style={{ flex: "0.35" }}>
+      <div className="d-flex justify-content-between p-2 border border-light" style={{'fontSize':'26px'}}>
         <RxAvatar />
         <div className="d-flex align-items-center min-vw-10 mr-2">
           <BsChatLeftText />
