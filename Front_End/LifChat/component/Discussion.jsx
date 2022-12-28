@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 const Discussion = () => {
     return (
         <div >
-            <div className="d-flex shadow rounded p-3">
+            <div className="d-flex shadow rounded w-75 p-3 m-auto">
                 <Sidebar/>
                 <Chat />
             </div>

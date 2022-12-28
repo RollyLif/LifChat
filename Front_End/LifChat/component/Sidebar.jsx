@@ -13,7 +13,7 @@ const Sidebar = () => {
         </div>
       </div>
       <div className="d-flex align-items-center bg-info p-1 h-2">
-        <div className="d-flex align-items-center bg-white w-100 rounded-2" style ={{height : "35px"}}>
+        <div className="d-flex align-items-center bg-white w-100 rounded-4" style ={{height : "35px"}}>
           <BsSearch className="m-1 text-info"/>
           <input className="m-1 border-0" placeholder="Recherche" type="text" />
         </div>
