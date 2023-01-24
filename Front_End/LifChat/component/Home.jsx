@@ -31,7 +31,7 @@ function home() {
 
     if (nameErr && passwordErr) {
       axios
-        .post("https://lifchat-5puo.onrender.com/person/login", {
+        .post("https://lifungula.onrender.com/person/login", {
           username: nom,
           password: motPasse,
         })

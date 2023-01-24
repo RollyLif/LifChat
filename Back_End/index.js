@@ -53,3 +53,5 @@ io.on('connection', (socket) =>{
       console.log('🔥: A user disconnected');
   });
 });
+
+module.exports = app;
