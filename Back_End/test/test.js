@@ -17,6 +17,19 @@ describe('post connexion', () => {
                 expect(res.body).to.be.json;
                 expect(err).to.be.null;
                 expect(res).to.have.status(200)
-            })
-    })
+            });
+    });
+});
+
+describe('get messages by user', ()=>{
+    chai.request(app)
+    .get('/private/message/conversation/63ce837f50e6d2cb6d6f2cf7')
+    .send()
+    .end((err, res)=>{
+        expect(res.body).to.be.an('array');
+        expect(err).to.be.null;
+        expect(res).to.have.status(200)
+    }
+
+    )
 })
